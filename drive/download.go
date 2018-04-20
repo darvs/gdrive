@@ -7,21 +7,22 @@ import (
 	"path/filepath"
 	"time"
 
-	"google.golang.org/api/drive/v3"
+	drive "google.golang.org/api/drive/v3"
 	"google.golang.org/api/googleapi"
 )
 
 type DownloadArgs struct {
-	Out       io.Writer
-	Progress  io.Writer
-	Id        string
-	Path      string
-	Force     bool
-	Skip      bool
-	Recursive bool
-	Delete    bool
-	Stdout    bool
-	Timeout   time.Duration
+	Out              io.Writer
+	Progress         io.Writer
+	Id               string
+	Path             string
+	Force            bool
+	Skip             bool
+	Recursive        bool
+	Delete           bool
+	Stdout           bool
+	Timeout          time.Duration
+	AcknowledgeAbuse bool
 }
 
 func (self *Drive) Download(args DownloadArgs) error {
@@ -127,7 +128,7 @@ func (self *Drive) downloadBinary(f *drive.File, args DownloadArgs) (int64, int6
 	// Get timeout reader wrapper and context
 	timeoutReaderWrapper, ctx := getTimeoutReaderWrapperContext(args.Timeout)
 
-	res, err := self.service.Files.Get(f.Id).Context(ctx).Download()
+	res, err := self.service.Files.Get(f.Id).Context(ctx).AcknowledgeAbuse(args.AcknowledgeAbuse).Download()
 	if err != nil {
 		if isTimeoutError(err) {
 			return 0, 0, fmt.Errorf("Failed to download file: timeout, no data was transferred for %v", args.Timeout)

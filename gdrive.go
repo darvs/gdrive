@@ -153,6 +153,12 @@ func main() {
 						Description:  fmt.Sprintf("Set timeout in seconds, use 0 for no timeout. Timeout is reached when no data is transferred in set amount of seconds, default: %d", DefaultTimeout),
 						DefaultValue: DefaultTimeout,
 					},
+					cli.BoolFlag{
+						Name:        "acknowledge-abuse",
+						Patterns:    []string{"--acknowledge-abuse"},
+						Description: "Acknowledge download of file marked as potentially abusive, malware, spam, etc.",
+						OmitValue:   true,
+					},
 				),
 			},
 		},
